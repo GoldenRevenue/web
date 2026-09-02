@@ -55,17 +55,13 @@ body {
   padding-right: clamp(20px, 5vw, 32px);
 }
 
-/* Ambient background: pure black with near-imperceptible radial bloom + grain */
+/* Ambient background: flat black */
 .ambient-bg {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background:
-    radial-gradient(700px 420px at 50% 0%, rgba(149, 191, 71, 0.09), transparent 60%),
-    radial-gradient(900px 600px at 85% 30%, rgba(168, 224, 99, 0.05), transparent 65%),
-    radial-gradient(800px 500px at 10% 65%, rgba(111, 175, 50, 0.05), transparent 60%),
-    #000;
+  background: #000;
 }
 
 .grain-layer {
@@ -91,18 +87,21 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(180deg, #a8e063 0%, #8bb945 100%);
+  background: #95bf47;
   color: #06210a;
   font-weight: 600;
   border-radius: 999px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-  box-shadow: 0 8px 30px -10px rgba(149, 191, 71, 0.55);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+  box-shadow: 0 4px 0 0 #6faf32;
 }
 
 .btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 40px -8px rgba(168, 224, 99, 0.65);
-  background: linear-gradient(180deg, #b8ec7e 0%, #95bf47 100%);
+  background: #a8e063;
+}
+
+.btn-primary:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 0 #6faf32;
 }
 
 .btn-ghost {
@@ -133,7 +132,7 @@ body {
 
 .card-surface-hover:hover {
   border-color: rgba(149, 191, 71, 0.4);
-  box-shadow: 0 0 34px -14px rgba(168, 224, 99, 0.35);
+  box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.8);
   transform: translateY(-4px);
 }
 

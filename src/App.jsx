@@ -19,7 +19,6 @@ export default function App() {
       <div className="relative z-10">
         <Navbar />
         <main>
-          <CTA />
           <Hero />
           <Portfolio />
           <Problems />
@@ -27,6 +26,7 @@ export default function App() {
           <Methodology />
           <Pricing />
           <FAQ />
+          <CTA />
         </main>
         <Footer />
       </div>

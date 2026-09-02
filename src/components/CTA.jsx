@@ -12,13 +12,6 @@ export default function CTA() {
           transition={{ duration: 0.7, ease: 'easeOut' }}
           className="relative overflow-hidden rounded-xl3 border border-line bg-surface px-6 py-20 text-center sm:px-10 sm:py-28"
         >
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                'radial-gradient(560px 320px at 50% 30%, rgba(168,224,99,0.16), transparent 70%)',
-            }}
-          />
           <div className="relative">
             <h2
               className="mx-auto max-w-[640px] font-extrabold leading-[1.08] tracking-[-0.02em] text-ink"

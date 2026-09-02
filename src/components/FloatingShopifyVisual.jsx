@@ -109,7 +109,6 @@ export default function FloatingShopifyVisual() {
                   repeatDelay: 1.4,
                   ease: 'easeInOut',
                 }}
-                style={{ filter: 'drop-shadow(0 0 4px rgba(168,224,99,0.9))' }}
               />
             ))}
         </svg>
@@ -128,7 +127,7 @@ export default function FloatingShopifyVisual() {
             className="relative flex h-20 w-20 items-center justify-center rounded-full sm:h-24 sm:w-24"
             style={{
               background: 'radial-gradient(circle at 35% 30%, #A8E063, #6FAF32 70%)',
-              boxShadow: '0 0 50px 6px rgba(149,191,71,0.45), 0 0 90px 20px rgba(149,191,71,0.15)',
+              boxShadow: '0 10px 24px -6px rgba(0,0,0,0.6)',
             }}
           >
             <span className="absolute inset-0 rounded-full border border-white/20" />

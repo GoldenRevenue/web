@@ -34,10 +34,10 @@ export default function Footer() {
           </ul>
 
           <a
-            href="#cta"
+            href="#precio"
             onClick={(e) => {
               e.preventDefault()
-              scrollToId('cta')
+              scrollToId('precio')
             }}
             className="btn-ghost px-4 py-2 text-sm"
           >

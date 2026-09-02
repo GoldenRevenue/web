@@ -7,18 +7,14 @@ export default function Hero() {
     <section id="inicio" className="relative section-pad pt-[150px] sm:pt-[170px]">
       <div className="container-px mx-auto flex max-w-content flex-col items-center text-center">
         {/* Eyebrow */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.05 }}
-          className="mb-7 inline-flex items-center gap-2 rounded-pill border border-line bg-white/[0.03] px-4 py-2 text-[13px] text-muted"
+          className="mb-5 text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-light"
         >
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-light opacity-60" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-light" />
-          </span>
           Pago único, sin mensualidades
-        </motion.div>
+        </motion.p>
 
         {/* H1 */}
         <motion.h1

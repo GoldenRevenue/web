@@ -137,7 +137,6 @@ function Stage({ stage, index }) {
           viewport={{ once: true, amount: 0.6 }}
           transition={{ duration: 0.4 }}
           className="h-3 w-3 rounded-full ring-4 ring-black"
-          style={{ boxShadow: '0 0 14px 2px rgba(168,224,99,0.55)' }}
         />
       </div>
 

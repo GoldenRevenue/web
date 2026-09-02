@@ -98,13 +98,6 @@ export default function Pricing() {
           transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
           className="card-surface relative mx-auto mt-14 max-w-[600px] overflow-hidden rounded-xl3 border-line p-6 shadow-card sm:p-9"
         >
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background: 'radial-gradient(420px 220px at 15% 0%, rgba(168,224,99,0.08), transparent 70%)',
-            }}
-          />
-
           <div className="relative flex flex-col gap-1 border-b border-line pb-6 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
             <div>
               <span className="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand/10 px-2.5 py-1 text-[11px] font-semibold text-brand-light">

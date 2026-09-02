@@ -30,15 +30,9 @@ export default {
         pill: '999px',
       },
       boxShadow: {
-        glow: '0 0 40px -8px rgba(168,224,99,0.35)',
-        'glow-sm': '0 0 24px -6px rgba(168,224,99,0.35)',
         card: '0 20px 60px -30px rgba(0,0,0,0.9)',
       },
       keyframes: {
-        pulseGlow: {
-          '0%, 100%': { boxShadow: '0 0 0 0 rgba(168,224,99,0.55)', opacity: '1' },
-          '50%': { boxShadow: '0 0 0 6px rgba(168,224,99,0)', opacity: '0.85' },
-        },
         floatY: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-10px)' },
@@ -68,7 +62,6 @@ export default {
         },
       },
       animation: {
-        'pulse-glow': 'pulseGlow 2.2s ease-in-out infinite',
         float: 'floatY 5s ease-in-out infinite',
         'float-slow': 'floatYSlow 6.5s ease-in-out infinite',
         breathe: 'breathe 4.5s ease-in-out infinite',
