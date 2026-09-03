@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import papelTinta from './img/papel-tinta.jpeg'
 import faunaCo from './img/fauna-co.jpeg'
 import auroraHome from './img/aurora-home.jpeg'
@@ -12,15 +12,17 @@ const PROJECTS = [
   { name: 'Retro Play', tag: 'Gaming · Electrónica', image: retroPlay },
 ]
 
-function PortfolioCard({ project, index, progress, reduceMotion }) {
+function PortfolioCard({ project, index, progress }) {
+  // El tilt 3D está ligado 1:1 a la posición de scroll (no es una animación
+  // en bucle), así que se mantiene activo también con "reducir movimiento".
   const isEven = index % 2 === 0
   const start = index * 0.06
   const end = 0.55 + index * 0.06
 
-  const rotateX = useTransform(progress, [start, end], reduceMotion ? [0, 0] : [22, 0])
-  const rotateY = useTransform(progress, [start, end], reduceMotion ? [0, 0] : [isEven ? -10 : 10, 0])
-  const y = useTransform(progress, [start, end], reduceMotion ? [0, 0] : [70, 0])
-  const scale = useTransform(progress, [start, end], reduceMotion ? [1, 1] : [0.9, 1])
+  const rotateX = useTransform(progress, [start, end], [22, 0])
+  const rotateY = useTransform(progress, [start, end], [isEven ? -10 : 10, 0])
+  const y = useTransform(progress, [start, end], [70, 0])
+  const scale = useTransform(progress, [start, end], [0.9, 1])
   const opacity = useTransform(progress, [start, start + 0.18], [0, 1])
 
   return (
@@ -46,7 +48,6 @@ function PortfolioCard({ project, index, progress, reduceMotion }) {
 
 export default function Portfolio() {
   const sectionRef = useRef(null)
-  const reduceMotion = useReducedMotion()
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start 0.9', 'start 0.25'],
@@ -74,7 +75,6 @@ export default function Portfolio() {
               project={project}
               index={i}
               progress={scrollYProgress}
-              reduceMotion={reduceMotion}
             />
           ))}
         </div>

@@ -134,14 +134,15 @@ export default function FloatingShopifyVisual() {
             ))}
         </svg>
 
-        {/* Nodo central Shopify */}
-        <motion.div
-          className="absolute left-1/2 top-[50%] -translate-x-1/2 -translate-y-1/2"
-          style={{ x: shiftX, y: shiftY }}
-          initial={{ opacity: 0, scale: 0.6 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        >
+        {/* Nodo central Shopify: capa exterior en CSS puro para centrar (nunca tocada por framer-motion) */}
+        <div className="absolute left-1/2 top-[50%] -translate-x-1/2 -translate-y-1/2">
+          {/* Capa interior: framer-motion solo añade aquí el desplazamiento del ratón y la entrada */}
+          <motion.div
+            style={{ x: shiftX, y: shiftY }}
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          >
           <div className="relative flex h-20 w-20 items-center justify-center sm:h-24 sm:w-24">
             {/* Halo difuminado, respira detrás del nodo */}
             <motion.span
@@ -183,7 +184,8 @@ export default function FloatingShopifyVisual() {
               </span>
             </motion.div>
           </div>
-        </motion.div>
+          </motion.div>
+        </div>
 
         {/* Tarjeta flotante: notificación de pedido */}
         <motion.div
