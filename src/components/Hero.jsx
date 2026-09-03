@@ -6,16 +6,6 @@ export default function Hero() {
   return (
     <section id="inicio" className="relative section-pad pt-[150px] sm:pt-[170px]">
       <div className="container-px mx-auto flex max-w-content flex-col items-center text-center">
-        {/* Eyebrow */}
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.05 }}
-          className="mb-5 text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-light"
-        >
-          Pago único, sin mensualidades
-        </motion.p>
-
         {/* H1 */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
@@ -68,6 +58,15 @@ export default function Hero() {
           Quiero transformar mi tienda
           <ArrowUpRight size={18} strokeWidth={2.4} />
         </motion.a>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mt-3 text-[13px] text-muted"
+        >
+          Pago único, sin mensualidades
+        </motion.p>
 
         <motion.div
           initial={{ opacity: 0 }}

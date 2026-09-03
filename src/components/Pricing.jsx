@@ -62,12 +62,33 @@ function AddonRow({ addon, checked, onToggle }) {
 
 export default function Pricing() {
   const [selected, setSelected] = useState({ liquids: false, ebook: false })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const total =
     BASE_PRICE + ADDONS.reduce((sum, addon) => sum + (selected[addon.id] ? addon.price : 0), 0)
 
   function toggle(id) {
     setSelected((prev) => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  async function handleCheckout() {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(selected),
+      })
+      if (!res.ok) throw new Error('request-failed')
+      const data = await res.json()
+      window.location.href = data.url
+    } catch (err) {
+      console.error(err)
+      setError('No se pudo iniciar el pago. Inténtalo de nuevo en unos segundos.')
+      setLoading(false)
+    }
   }
 
   return (
@@ -139,15 +160,24 @@ export default function Pricing() {
               <p className="text-[12px] text-muted">Total</p>
               <p className="text-[24px] font-extrabold leading-tight text-ink">{formatPrice(total)}</p>
             </div>
-            <button type="button" className="btn-primary justify-center px-6 py-3.5 text-[14px]">
-              Comprar ahora
+            <button
+              type="button"
+              onClick={handleCheckout}
+              disabled={loading}
+              className="btn-primary justify-center px-6 py-3.5 text-[14px] disabled:opacity-60"
+            >
+              {loading ? 'Redirigiendo…' : 'Comprar ahora'}
               <ArrowUpRight size={16} strokeWidth={2.4} />
             </button>
           </div>
 
+          {error && (
+            <p className="relative mt-4 text-center text-[13px] text-red-400">{error}</p>
+          )}
+
           <p className="relative mt-5 flex items-center justify-center gap-1.5 text-center text-[12px] text-muted">
             <ShieldCheck size={13} className="text-brand-light" />
-            Pago seguro · Acceso inmediato tras la compra
+            Pago seguro · Recibirás los archivos por email tras la compra
           </p>
         </motion.div>
       </div>

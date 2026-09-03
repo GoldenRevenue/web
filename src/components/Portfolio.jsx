@@ -1,11 +1,14 @@
 import { motion } from 'framer-motion'
-import { ArrowUpRight, BookOpen, Frame, Flame } from 'lucide-react'
-import StoreMockup from './ui/StoreMockup'
+import papelTinta from './img/papel-tinta.jpeg'
+import faunaCo from './img/fauna-co.jpeg'
+import auroraHome from './img/aurora-home.jpeg'
+import retroPlay from './img/retro-play.jpeg'
 
 const PROJECTS = [
-  { name: 'Papel & Tinta', tag: 'Librería · Papelería', accent: '#A8E063', variant: 'grid', Icon: BookOpen },
-  { name: 'Atlas Estudio', tag: 'Arte · Pósters', accent: '#95BF47', variant: 'alt', Icon: Frame },
-  { name: 'Ámbar & Cera', tag: 'Hogar · Velas', accent: '#6FAF32', variant: 'grid', Icon: Flame },
+  { name: 'Papel & Tinta', tag: 'Librería · Papelería', image: papelTinta },
+  { name: 'Fauna & Co.', tag: 'Mascotas · Accesorios', image: faunaCo },
+  { name: 'Aurora Home', tag: 'Iluminación · Decoración', image: auroraHome },
+  { name: 'Retro Play', tag: 'Gaming · Electrónica', image: retroPlay },
 ]
 
 export default function Portfolio() {
@@ -19,15 +22,12 @@ export default function Portfolio() {
           transition={{ duration: 0.6 }}
           className="mx-auto max-w-[640px] text-center"
         >
-          <p className="mb-4 text-[12px] font-semibold uppercase tracking-[0.18em] text-brand-light">
-            Algunos de nuestros proyectos
-          </p>
           <h2 className="text-[32px] font-extrabold leading-tight tracking-[-0.02em] text-ink sm:text-[40px]">
             Tiendas diseñadas para parecer marcas.
           </h2>
         </motion.div>
 
-        <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {PROJECTS.map((project, i) => (
             <motion.div
               key={project.name}
@@ -35,25 +35,19 @@ export default function Portfolio() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.6, delay: i * 0.12, ease: 'easeOut' }}
-              className="card-surface-hover group relative overflow-hidden rounded-xl3 border border-line shadow-card"
+              className="card-surface overflow-hidden rounded-xl3 border border-line shadow-card"
             >
-              <div className="relative h-[260px] overflow-hidden">
-                <div className="h-full w-full transition-transform duration-500 ease-out group-hover:scale-[1.03]">
-                  <StoreMockup accent={project.accent} variant={project.variant} Icon={project.Icon} />
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 backdrop-blur-[1px] transition-all duration-300 group-hover:bg-black/55 group-hover:opacity-100">
-                  <span className="btn-primary translate-y-2 px-5 py-2.5 text-sm opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                    Ver proyecto
-                    <ArrowUpRight size={15} />
-                  </span>
-                </div>
+              <div className="h-[300px] overflow-hidden sm:h-[340px]">
+                <img
+                  src={project.image}
+                  alt={`Captura de la tienda ${project.name}`}
+                  loading="lazy"
+                  className="h-full w-full object-cover object-top"
+                />
               </div>
-              <div className="flex items-center justify-between px-6 py-5">
-                <div>
-                  <h3 className="text-[15px] font-semibold text-ink">{project.name}</h3>
-                  <p className="mt-0.5 text-[13px] text-muted">{project.tag}</p>
-                </div>
-                <ArrowUpRight size={16} className="text-muted transition-colors group-hover:text-brand-light" />
+              <div className="px-5 py-4">
+                <h3 className="text-[14px] font-medium text-ink/80">{project.name}</h3>
+                <p className="mt-0.5 text-[12px] text-muted2">{project.tag}</p>
               </div>
             </motion.div>
           ))}

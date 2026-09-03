@@ -79,7 +79,28 @@ export default function FloatingShopifyVisual() {
               <stop offset="55%" stopColor="rgba(255,255,255,0.16)" />
               <stop offset="100%" stopColor="rgba(168,224,99,0.55)" />
             </linearGradient>
+            <filter id="lineGlow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="3.2" />
+            </filter>
           </defs>
+
+          {/* Halo desenfocado bajo cada línea, para dar profundidad/glow premium */}
+          {LINES.map((line, i) => (
+            <motion.path
+              key={`glow-${i}`}
+              d={line.d}
+              fill="none"
+              stroke="url(#lineFade)"
+              strokeWidth="3"
+              strokeLinecap="round"
+              filter="url(#lineGlow)"
+              opacity={0.55}
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 1.6, delay: 0.6 + line.delay, ease: [0.16, 1, 0.3, 1] }}
+            />
+          ))}
+
           {LINES.map((line, i) => (
             <motion.path
               key={i}
@@ -90,7 +111,7 @@ export default function FloatingShopifyVisual() {
               strokeLinecap="round"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ duration: 1.4, delay: 0.6 + line.delay, ease: 'easeOut' }}
+              transition={{ duration: 1.6, delay: 0.6 + line.delay, ease: [0.16, 1, 0.3, 1] }}
             />
           ))}
 
@@ -119,36 +140,68 @@ export default function FloatingShopifyVisual() {
           style={{ x: shiftX, y: shiftY }}
           initial={{ opacity: 0, scale: 0.6 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.5, ease: 'easeOut' }}
+          transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
         >
-          <motion.div
-            animate={reduceMotion ? {} : { scale: [1, 1.045, 1] }}
-            transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="relative flex h-20 w-20 items-center justify-center rounded-full sm:h-24 sm:w-24"
-            style={{
-              background: 'radial-gradient(circle at 35% 30%, #A8E063, #6FAF32 70%)',
-              boxShadow: '0 10px 24px -6px rgba(0,0,0,0.6)',
-            }}
-          >
-            <span className="absolute inset-0 rounded-full border border-white/20" />
-            <ShoppingBag className="h-8 w-8 text-black/80 sm:h-9 sm:w-9" strokeWidth={2} />
-          </motion.div>
+          <div className="relative flex h-20 w-20 items-center justify-center sm:h-24 sm:w-24">
+            {/* Halo difuminado, respira detrás del nodo */}
+            <motion.span
+              aria-hidden="true"
+              className="absolute -inset-6 rounded-full blur-2xl"
+              style={{ background: 'radial-gradient(circle, rgba(168,224,99,0.55), transparent 72%)' }}
+              animate={reduceMotion ? {} : { opacity: [0.5, 0.9, 0.5], scale: [1, 1.12, 1] }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+            />
+
+            {/* Anillo giratorio, acabado premium */}
+            {!reduceMotion && (
+              <motion.span
+                aria-hidden="true"
+                className="absolute -inset-3 rounded-full p-px"
+                style={{
+                  background:
+                    'conic-gradient(from 0deg, transparent 0%, rgba(168,224,99,0.9) 18%, transparent 40%, transparent 100%)',
+                }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 7, repeat: Infinity, ease: 'linear' }}
+              >
+                <span className="block h-full w-full rounded-full bg-black" />
+              </motion.span>
+            )}
+
+            <motion.div
+              animate={reduceMotion ? {} : { scale: [1, 1.045, 1] }}
+              transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="relative flex h-20 w-20 items-center justify-center rounded-full sm:h-24 sm:w-24"
+              style={{
+                background: 'radial-gradient(circle at 35% 30%, #A8E063, #6FAF32 70%)',
+                boxShadow: '0 14px 34px -8px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.4)',
+              }}
+            >
+              <span className="absolute inset-0 rounded-full border border-white/20" />
+              <ShoppingBag className="h-8 w-8 text-black/80 sm:h-9 sm:w-9" strokeWidth={2} />
+            </motion.div>
+          </div>
         </motion.div>
 
         {/* Tarjeta flotante: notificación de pedido */}
         <motion.div
           style={{ x: useTransform(shiftX, (v) => v * 0.6), y: useTransform(shiftY, (v) => v * 0.6) }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 1.1 }}
+          initial={{ opacity: 0, y: 24, scale: 0.94, filter: 'blur(6px)' }}
+          animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+          transition={{ duration: 0.8, delay: 1.15, ease: [0.16, 1, 0.3, 1] }}
+          whileHover={reduceMotion ? undefined : { y: -3, transition: { duration: 0.25 } }}
           className="absolute left-[58%] top-[62%] hidden w-[220px] sm:block"
         >
           <motion.div
             animate={reduceMotion ? {} : { y: [0, -8, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            className="flex items-start gap-3 rounded-2xl border border-line bg-elevated/90 px-4 py-3 shadow-card backdrop-blur"
+            className="relative flex items-start gap-3 overflow-hidden rounded-2xl border border-line2 bg-elevated/90 px-4 py-3 shadow-[0_20px_45px_-16px_rgba(0,0,0,0.85)] backdrop-blur-md"
           >
-            <span className="mt-0.5 flex h-7 w-7 flex-none items-center justify-center rounded-full bg-brand/20">
+            <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+            <span
+              className="mt-0.5 flex h-7 w-7 flex-none items-center justify-center rounded-full"
+              style={{ background: 'linear-gradient(145deg, rgba(168,224,99,0.35), rgba(111,175,50,0.18))' }}
+            >
               <Bell size={13} className="text-brand-light" />
             </span>
             <div className="text-left">
@@ -161,17 +214,23 @@ export default function FloatingShopifyVisual() {
         {/* Chip flotante secundario */}
         <motion.div
           style={{ x: useTransform(shiftX, (v) => v * -0.5), y: useTransform(shiftY, (v) => v * -0.4) }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 1.3 }}
+          initial={{ opacity: 0, y: 24, scale: 0.94, filter: 'blur(6px)' }}
+          animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+          transition={{ duration: 0.8, delay: 1.35, ease: [0.16, 1, 0.3, 1] }}
+          whileHover={reduceMotion ? undefined : { y: -3, transition: { duration: 0.25 } }}
           className="absolute left-[16%] top-[68%] hidden sm:block"
         >
           <motion.div
             animate={reduceMotion ? {} : { y: [0, 7, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
-            className="flex items-center gap-2 rounded-full border border-line bg-elevated/90 px-3.5 py-2 shadow-card backdrop-blur"
+            className="relative flex items-center gap-2 overflow-hidden rounded-full border border-line2 bg-elevated/90 px-3.5 py-2 shadow-[0_20px_45px_-16px_rgba(0,0,0,0.85)] backdrop-blur-md"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-brand-light" />
+            <span className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+            <motion.span
+              className="h-1.5 w-1.5 rounded-full bg-brand-light"
+              animate={reduceMotion ? {} : { opacity: [1, 0.4, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            />
             <span className="text-[11px] font-medium text-muted">Conversión +38%</span>
           </motion.div>
         </motion.div>
