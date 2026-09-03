@@ -27,7 +27,7 @@ export default function Navbar() {
     >
       <motion.nav
         style={{ paddingTop: paddingY, paddingBottom: paddingY, maxWidth, backgroundColor: bg }}
-        className="w-full flex items-center justify-between gap-6 rounded-pill border border-line px-6 backdrop-blur-xl transition-shadow"
+        className="w-full flex items-center justify-between gap-3 rounded-pill border border-line px-4 backdrop-blur-xl transition-shadow sm:gap-6 sm:px-6"
       >
         <a
           href="#inicio"
@@ -35,7 +35,7 @@ export default function Navbar() {
             e.preventDefault()
             scrollToId('inicio')
           }}
-          className="flex items-center gap-1 text-[15px] font-extrabold tracking-tight text-ink whitespace-nowrap"
+          className="flex items-center gap-1 text-[13px] font-extrabold tracking-tight text-ink whitespace-nowrap sm:text-[15px]"
         >
           {BRAND_NAME.toUpperCase()}
           <span className="text-brand-light">.</span>

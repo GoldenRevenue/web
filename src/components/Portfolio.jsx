@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
 import papelTinta from './img/papel-tinta.jpeg'
 import faunaCo from './img/fauna-co.jpeg'
 import auroraHome from './img/aurora-home.jpeg'
@@ -52,6 +52,13 @@ export default function Portfolio() {
     target: sectionRef,
     offset: ['start 0.9', 'start 0.25'],
   })
+  // Suaviza el progreso de scroll con inercia física, para que el tilt
+  // "persiga" el scroll con fluidez en vez de seguirlo pixel a pixel.
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 90,
+    damping: 20,
+    mass: 0.4,
+  })
 
   return (
     <section ref={sectionRef} className="section-pad relative" style={{ perspective: 1400 }}>
@@ -74,7 +81,7 @@ export default function Portfolio() {
               key={project.name}
               project={project}
               index={i}
-              progress={scrollYProgress}
+              progress={smoothProgress}
             />
           ))}
         </div>
