@@ -35,7 +35,7 @@ export default function Navbar() {
             e.preventDefault()
             scrollToId('inicio')
           }}
-          className="flex items-center gap-1 text-[13px] font-extrabold tracking-tight text-ink whitespace-nowrap sm:text-[15px]"
+          className="flex min-w-0 items-center gap-1 truncate text-[13px] font-extrabold tracking-tight text-ink sm:text-[15px]"
         >
           {BRAND_NAME.toUpperCase()}
           <span className="text-brand-light">.</span>
@@ -64,9 +64,9 @@ export default function Navbar() {
             e.preventDefault()
             scrollToId('precio')
           }}
-          className="btn-primary px-4 py-2.5 text-[13px] sm:px-5 sm:text-sm whitespace-nowrap"
+          className="btn-primary px-3 py-2.5 text-[13px] sm:px-5 sm:text-sm whitespace-nowrap flex-none"
         >
-          {CTA_LABEL}
+          <span className="hidden sm:inline">{CTA_LABEL}</span>
           <ArrowUpRight size={15} strokeWidth={2.4} />
         </a>
       </motion.nav>
