@@ -61,7 +61,7 @@ export default function FloatingBottomNavigation() {
           )
         })}
         <button
-          onClick={() => goTo('cta')}
+          onClick={() => goTo('precio')}
           className="btn-primary ml-1 shrink-0 px-4 py-2 text-[13px]"
         >
           <span className="hidden md:inline">{CTA_LABEL}</span>

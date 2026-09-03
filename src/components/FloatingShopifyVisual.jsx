@@ -178,7 +178,9 @@ export default function FloatingShopifyVisual() {
               }}
             >
               <span className="absolute inset-0 rounded-full border border-white/20" />
-              <ShoppingBag className="h-8 w-8 text-black/80 sm:h-9 sm:w-9" strokeWidth={2} />
+              <span className="absolute inset-0 flex items-center justify-center">
+                <ShoppingBag className="h-8 w-8 text-black/80 sm:h-9 sm:w-9" strokeWidth={2} />
+              </span>
             </motion.div>
           </div>
         </motion.div>

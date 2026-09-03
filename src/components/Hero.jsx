@@ -4,7 +4,7 @@ import FloatingShopifyVisual from './FloatingShopifyVisual'
 
 export default function Hero() {
   return (
-    <section id="inicio" className="relative section-pad pt-[150px] sm:pt-[170px]">
+    <section id="inicio" className="relative section-pad !pt-[130px] sm:!pt-[150px] md:!pt-[170px]">
       <div className="container-px mx-auto flex max-w-content flex-col items-center text-center">
         {/* H1 */}
         <motion.h1
@@ -19,7 +19,7 @@ export default function Hero() {
             <motion.span
               initial={{ opacity: 0, scale: 0.7 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.5, ease: 'easeOut' }}
+              transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="inline-block align-middle"
               style={{ fontSize: '0.52em' }}
             >
@@ -45,10 +45,10 @@ export default function Hero() {
 
         {/* CTA */}
         <motion.a
-          href="#cta"
+          href="#precio"
           onClick={(e) => {
             e.preventDefault()
-            document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' })
+            document.getElementById('precio')?.scrollIntoView({ behavior: 'smooth' })
           }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -129,7 +129,7 @@ export default function Solutions() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.55, delay: i * 0.08, ease: 'easeOut' }}
+              transition={{ duration: 0.55, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="card-surface card-surface-hover group flex flex-col items-center gap-8 rounded-xl3 p-6 sm:p-8 md:flex-row"
             >
               <div className="h-[160px] w-full flex-none overflow-hidden rounded-xl2 border border-white/[0.06] bg-black/30 md:h-[150px] md:w-[220px]">

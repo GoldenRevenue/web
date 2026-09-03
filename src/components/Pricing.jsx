@@ -116,7 +116,7 @@ export default function Pricing() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="card-surface relative mx-auto mt-14 max-w-[600px] overflow-hidden rounded-xl3 border-line p-6 shadow-card sm:p-9"
         >
           <div className="relative flex flex-col gap-1 border-b border-line pb-6 sm:flex-row sm:items-start sm:justify-between sm:gap-4">

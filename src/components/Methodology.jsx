@@ -127,7 +127,7 @@ function Stage({ stage, index }) {
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.55, ease: 'easeOut' }}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
       className="relative grid grid-cols-[28px_1fr] items-start gap-5 md:grid-cols-[1fr_28px_1fr] md:gap-8"
     >
       <div className="relative z-10 flex justify-center pt-1 md:col-start-2">

@@ -110,7 +110,7 @@ export default function Problems() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.55, delay: i * 0.1, ease: 'easeOut' }}
+              transition={{ duration: 0.55, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
               className="card-surface card-surface-hover rounded-xl2 p-6"
             >
               <div className="mb-6 h-[140px] overflow-hidden rounded-xl border border-white/[0.06] bg-black/30">

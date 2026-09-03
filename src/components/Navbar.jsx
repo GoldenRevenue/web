@@ -21,9 +21,9 @@ export default function Navbar() {
     <motion.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4"
-      style={{ paddingTop: 22 }}
+      style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 22px)' }}
     >
       <motion.nav
         style={{ paddingTop: paddingY, paddingBottom: paddingY, maxWidth, backgroundColor: bg }}
@@ -59,10 +59,10 @@ export default function Navbar() {
         </ul>
 
         <a
-          href="#cta"
+          href="#precio"
           onClick={(e) => {
             e.preventDefault()
-            scrollToId('cta')
+            scrollToId('precio')
           }}
           className="btn-primary px-4 py-2.5 text-[13px] sm:px-5 sm:text-sm whitespace-nowrap"
         >
