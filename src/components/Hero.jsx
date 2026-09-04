@@ -1,16 +1,33 @@
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { ArrowUpRight, ShoppingBag } from 'lucide-react'
+import { EASE_BRAND } from '../constants/animation'
 import FloatingShopifyVisual from './FloatingShopifyVisual'
 
 export default function Hero() {
+  const sectionRef = useRef(null)
+  // Progreso de scroll mientras el hero abandona el viewport: base de la
+  // profundidad del visual (sube y se aleja levemente, como una capa propia).
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  })
+  const visualY = useTransform(scrollYProgress, [0, 1], [0, -60])
+  const visualScale = useTransform(scrollYProgress, [0, 1], [1, 0.94])
+  const visualOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
+
   return (
-    <section id="inicio" className="relative section-pad !pt-[130px] sm:!pt-[150px] md:!pt-[170px]">
+    <section
+      ref={sectionRef}
+      id="inicio"
+      className="relative section-pad !pt-[130px] sm:!pt-[150px] md:!pt-[170px]"
+    >
       <div className="container-px mx-auto flex max-w-content flex-col items-center text-center">
         {/* H1 */}
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.15 }}
+          transition={{ duration: 0.7, delay: 0.15, ease: EASE_BRAND }}
           className="max-w-[880px] font-extrabold leading-[1.05] tracking-[-0.03em] text-ink"
           style={{ fontSize: 'clamp(40px, 6.4vw, 76px)' }}
         >
@@ -19,7 +36,7 @@ export default function Hero() {
             <motion.span
               initial={{ opacity: 0, scale: 0.7 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.6, delay: 0.5, ease: EASE_BRAND }}
               className="inline-block align-middle"
               style={{ fontSize: '0.52em' }}
             >
@@ -36,7 +53,7 @@ export default function Hero() {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          transition={{ duration: 0.6, delay: 0.3, ease: EASE_BRAND }}
           className="mx-auto mt-7 max-w-[560px] text-[15px] leading-relaxed text-muted sm:text-base"
         >
           Más que una tienda online. Diseñamos experiencias de compra pensadas
@@ -52,7 +69,7 @@ export default function Hero() {
           }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.42 }}
+          transition={{ duration: 0.6, delay: 0.42, ease: EASE_BRAND }}
           className="btn-primary mt-9 px-7 py-3.5 text-[15px]"
         >
           Quiero transformar mi tienda
@@ -62,7 +79,7 @@ export default function Hero() {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          transition={{ duration: 0.6, delay: 0.5, ease: EASE_BRAND }}
           className="mt-3 text-[13px] text-muted"
         >
           Pago único, sin mensualidades
@@ -71,10 +88,14 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.9, delay: 0.6 }}
+          transition={{ duration: 0.9, delay: 0.6, ease: EASE_BRAND }}
           className="w-full"
         >
-          <FloatingShopifyVisual />
+          {/* Capa de scroll aparte: el fundido de entrada y el parallax de salida
+              no deben pelear por la misma propiedad "opacity". */}
+          <motion.div style={{ y: visualY, scale: visualScale, opacity: visualOpacity }}>
+            <FloatingShopifyVisual />
+          </motion.div>
         </motion.div>
       </div>
     </section>

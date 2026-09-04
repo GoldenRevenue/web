@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { motion, useScroll } from 'framer-motion'
 import { Check } from 'lucide-react'
+import { EASE_BRAND } from '../constants/animation'
 
 function TagsVisual() {
   const tags = ['Shopify', 'Google Analytics', 'Google', 'Reddit', 'Amazon']
@@ -174,7 +175,7 @@ export default function Methodology() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: EASE_BRAND }}
           className="mx-auto max-w-[640px] text-center"
         >
           <h2 className="text-[30px] font-extrabold leading-tight tracking-[-0.02em] text-ink sm:text-[38px]">

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Minus } from 'lucide-react'
+import { EASE_BRAND } from '../constants/animation'
 
 const ITEMS = [
   {
@@ -48,7 +49,7 @@ function FAQItem({ item, isOpen, onToggle }) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            transition={{ duration: 0.35, ease: EASE_BRAND }}
             className="overflow-hidden"
           >
             <p className="pb-5 pr-10 text-[14px] leading-relaxed text-muted">{item.a}</p>
@@ -69,7 +70,7 @@ export default function FAQ() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: EASE_BRAND }}
           className="text-center"
         >
           <h2 className="text-[30px] font-extrabold leading-tight tracking-[-0.02em] text-ink sm:text-[38px]">
@@ -81,7 +82,7 @@ export default function FAQ() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
+          transition={{ duration: 0.6, delay: 0.1, ease: EASE_BRAND }}
           className="mt-12 rounded-xl3 border border-line bg-surface px-6 sm:px-8"
         >
           {ITEMS.map((item, i) => (

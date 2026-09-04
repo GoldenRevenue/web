@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
+import { EASE_BRAND, fadeInUp } from '../constants/animation'
+import { useMouseTilt } from '../hooks/useMouseTilt'
 
 function TemplateVisual() {
   return (
@@ -84,6 +86,38 @@ const CARDS = [
   },
 ]
 
+function ProblemCard({ card, index }) {
+  const { ref, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseTilt()
+
+  return (
+    <motion.div
+      ref={ref}
+      variants={fadeInUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{ ...fadeInUp.visible.transition, delay: index * 0.1 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+      className="card-surface card-surface-hover rounded-xl2 p-6"
+    >
+      <div
+        style={{ transform: 'translateZ(24px)' }}
+        className="mb-6 h-[140px] overflow-hidden rounded-xl border border-white/[0.06] bg-black/30"
+      >
+        <card.Visual />
+      </div>
+      <h3 style={{ transform: 'translateZ(16px)' }} className="text-[17px] font-semibold text-ink">
+        {card.title}
+      </h3>
+      <p style={{ transform: 'translateZ(16px)' }} className="mt-2 text-[14px] leading-relaxed text-muted">
+        {card.text}
+      </p>
+    </motion.div>
+  )
+}
+
 export default function Problems() {
   return (
     <section id="problemas" className="section-pad relative">
@@ -92,7 +126,7 @@ export default function Problems() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: EASE_BRAND }}
           className="mx-auto max-w-[680px] text-center"
         >
           <h2 className="text-[30px] font-extrabold leading-tight tracking-[-0.02em] text-ink sm:text-[38px]">
@@ -103,22 +137,9 @@ export default function Problems() {
           </p>
         </motion.div>
 
-        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3" style={{ perspective: 1400 }}>
           {CARDS.map((card, i) => (
-            <motion.div
-              key={card.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.55, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="card-surface card-surface-hover rounded-xl2 p-6"
-            >
-              <div className="mb-6 h-[140px] overflow-hidden rounded-xl border border-white/[0.06] bg-black/30">
-                <card.Visual />
-              </div>
-              <h3 className="text-[17px] font-semibold text-ink">{card.title}</h3>
-              <p className="mt-2 text-[14px] leading-relaxed text-muted">{card.text}</p>
-            </motion.div>
+            <ProblemCard key={card.title} card={card} index={i} />
           ))}
         </div>
 
@@ -126,7 +147,7 @@ export default function Problems() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
+          transition={{ duration: 0.5, delay: 0.15, ease: EASE_BRAND }}
           className="mt-12 flex justify-center"
         >
           <a

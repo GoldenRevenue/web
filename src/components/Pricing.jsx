@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowUpRight, Check, Code2, Book, ShieldCheck, Zap } from 'lucide-react'
+import { EASE_BRAND, riseIn3D } from '../constants/animation'
 
 // Precios en céntimos para evitar errores de redondeo al sumar decimales.
 const BASE_PRICE = 2995
@@ -98,7 +99,7 @@ export default function Pricing() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.6, ease: EASE_BRAND }}
           className="mx-auto max-w-[640px] text-center"
         >
           <p className="mb-4 text-[12px] font-semibold uppercase tracking-[0.18em] text-brand-light">
@@ -113,10 +114,12 @@ export default function Pricing() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          variants={riseIn3D}
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ ...riseIn3D.visible.transition, delay: 0.1 }}
+          style={{ transformPerspective: 1400 }}
           className="card-surface relative mx-auto mt-14 max-w-[600px] overflow-hidden rounded-xl3 border-line p-6 shadow-card sm:p-9"
         >
           <div className="relative flex flex-col gap-1 border-b border-line pb-6 sm:flex-row sm:items-start sm:justify-between sm:gap-4">

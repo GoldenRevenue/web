@@ -1,3 +1,4 @@
+import ScrollProgress from './components/ScrollProgress'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Portfolio from './components/Portfolio'
@@ -15,6 +16,8 @@ export default function App() {
     <div className="relative min-h-screen">
       <div className="ambient-bg" />
       <div className="grain-layer" />
+
+      <ScrollProgress />
 
       <div className="relative z-10">
         <Navbar />

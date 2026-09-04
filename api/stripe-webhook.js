@@ -26,15 +26,15 @@ function getDeliverables() {
   return {
     [process.env.STRIPE_PRICE_BASE]: {
       label: 'Plantilla Golden Revenue + guía de instalación',
-      key: 'plantilla-golden-revenue.zip',
+      key: '02_sirviendo_chimenea_fincavinoa.mp4',
     },
     [process.env.STRIPE_PRICE_LIQUIDS]: {
       label: '+180 archivos .liquid',
-      key: 'extra-liquids.zip',
+      key: '03_brindis_cenital_quintaluna.mp4',
     },
     [process.env.STRIPE_PRICE_EBOOK]: {
       label: 'Ebook premium',
-      key: 'ebook-premium.pdf',
+      key: '04_tres_botellas_chimenea.mp4',
     },
   }
 }
