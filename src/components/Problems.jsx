@@ -1,167 +1,139 @@
-import { motion } from 'framer-motion'
-import { ArrowUpRight } from 'lucide-react'
-import { EASE_BRAND, fadeInUp } from '../constants/animation'
-import { useMouseTilt } from '../hooks/useMouseTilt'
+import { useEffect, useRef, useState } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { EASE_BRAND } from '../constants/animation'
 
-function TemplateVisual() {
-  return (
-    <div className="flex h-full flex-col justify-between p-4">
-      <p className="mb-2 text-[11px] font-medium text-muted">Categorías</p>
-      <div className="grid grid-cols-3 gap-2">
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="h-10 rounded-md bg-white/[0.06]" />
-        ))}
-      </div>
-      <p className="mt-4 text-center text-[11px] text-muted/70">Our latest arrivals</p>
-    </div>
+// Por debajo de este ancho, el carrusel deja de desplazar el texto a los lados:
+// en pantallas estrechas ese barrido horizontal saca la lectura del centro y
+// resulta incómodo. La profundidad (escala/blur/opacidad) se mantiene igual.
+const MOBILE_BREAKPOINT_PX = 640
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT_PX
   )
+
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT_PX - 1}px)`)
+    const onChange = () => setIsMobile(mql.matches)
+    onChange()
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
+  }, [])
+
+  return isMobile
 }
 
-function CriteriaVisual() {
-  return (
-    <div className="flex h-full flex-col justify-center gap-3 p-4">
-      <div className="flex items-center justify-between rounded-full border border-line bg-black/40 px-3 py-1.5">
-        <span className="text-[10px] font-medium text-muted">DATOS</span>
-        <span className="relative h-4 w-8 rounded-full bg-white/10">
-          <span className="absolute right-0.5 top-0.5 h-3 w-3 rounded-full bg-white/60" />
-        </span>
-        <span className="text-[10px] font-medium text-muted">INTUICIÓN</span>
-      </div>
-      <div className="flex items-end gap-1.5 px-1">
-        {[40, 65, 30, 80, 50].map((h, i) => (
-          <div
-            key={i}
-            className="w-full rounded-sm bg-white/10"
-            style={{ height: `${h * 0.4}px` }}
-          />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function UnclearVisual() {
-  return (
-    <div className="flex h-full items-center justify-center p-4">
-      <svg viewBox="0 0 120 120" className="h-24 w-24">
-        <defs>
-          <filter id="glow-warn">
-            <feGaussianBlur stdDeviation="2.2" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        <g fill="none" stroke="#E8845A" strokeWidth="1.3" opacity="0.85" filter="url(#glow-warn)">
-          <path d="M60 8 A52 52 0 0 1 100 90" />
-          <path d="M100 90 A52 52 0 0 1 22 96" />
-          <path d="M22 96 A52 52 0 0 1 18 40" />
-          <path d="M18 40 A52 52 0 0 1 60 8" />
-          <path d="M60 8 L58 62" />
-          <path d="M100 90 L58 62" />
-          <path d="M22 96 L58 62" />
-          <path d="M18 40 L58 62" />
-        </g>
-      </svg>
-    </div>
-  )
-}
-
-const CARDS = [
+const ITEMS = [
   {
     title: 'Una plantilla genérica',
     text: 'Tu tienda se parece a cientos de negocios más. No transmite una identidad propia ni genera recuerdo.',
-    Visual: TemplateVisual,
   },
   {
     title: 'Cambios sin criterio',
     text: 'Colores, textos y secciones modificados sin una estrategia clara. Cada elemento debería tener una razón.',
-    Visual: CriteriaVisual,
   },
   {
     title: 'No transmite lo que vendes',
     text: 'Tu producto puede ser excelente, pero si tu tienda no lo comunica correctamente, el cliente no lo percibe.',
-    Visual: UnclearVisual,
   },
 ]
 
-function ProblemCard({ card, index }) {
-  const { ref, rotateX, rotateY, handleMouseMove, handleMouseLeave } = useMouseTilt()
+const TOTAL = ITEMS.length
+
+// Distancia circular más corta entre un índice y la posición continua activa
+// (puede ser fraccionaria mientras el scroll está a mitad de una transición).
+function circularDelta(index, activeContinuous) {
+  let diff = index - activeContinuous
+  diff = ((diff + TOTAL / 2) % TOTAL + TOTAL) % TOTAL - TOTAL / 2
+  return diff
+}
+
+function ProblemSlide({ item, index, active, isMobile }) {
+  // Todo se deriva de "active" (0 → TOTAL-1, continuo) — nada de estado propio,
+  // el scroll es la única fuente de verdad, igual que en el resto del sitio.
+  // En móvil el desplazamiento lateral y el giro se anulan (multiplicador 0):
+  // el texto permanece siempre centrado, solo cambia de profundidad.
+  const x = useTransform(active, (v) => `${circularDelta(index, v) * (isMobile ? 0 : 92)}%`)
+  const rotateY = useTransform(active, (v) => circularDelta(index, v) * (isMobile ? 0 : -38))
+  const z = useTransform(active, (v) => -180 * Math.min(Math.abs(circularDelta(index, v)), 1))
+  const scale = useTransform(active, (v) => 1 - 0.2 * Math.min(Math.abs(circularDelta(index, v)), 1))
+  // Sin desplazamiento lateral en móvil, los textos comparten el mismo centro:
+  // hay que ocultarlos mucho más rápido (factor 3.4 en vez de 0.77) para que
+  // nunca queden dos títulos legibles superpuestos durante la transición.
+  const opacity = useTransform(active, (v) =>
+    Math.max(0, 1 - Math.abs(circularDelta(index, v)) * (isMobile ? 3.4 : 0.77))
+  )
+  const blur = useTransform(active, (v) => `blur(${Math.min(Math.abs(circularDelta(index, v)) * 1.8, 2)}px)`)
+  const textOpacity = useTransform(active, (v) => Math.max(0, 1 - Math.abs(circularDelta(index, v)) * 5))
+  // El más cercano al centro pinta por encima de los demás, para que un resto
+  // de opacidad residual nunca "gane" visualmente al título que sí se está leyendo.
+  const zIndex = useTransform(active, (v) => Math.round(100 - Math.abs(circularDelta(index, v)) * 10))
 
   return (
     <motion.div
-      ref={ref}
-      variants={fadeInUp}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{ ...fadeInUp.visible.transition, delay: index * 0.1 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
-      className="card-surface card-surface-hover rounded-xl2 p-6"
+      style={{ x, rotateY, z, scale, opacity, filter: blur, zIndex, transformStyle: 'preserve-3d' }}
+      className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center sm:px-16"
     >
-      <div
-        style={{ transform: 'translateZ(24px)' }}
-        className="mb-6 h-[140px] overflow-hidden rounded-xl border border-white/[0.06] bg-black/30"
-      >
-        <card.Visual />
-      </div>
-      <h3 style={{ transform: 'translateZ(16px)' }} className="text-[17px] font-semibold text-ink">
-        {card.title}
+      <h3 className="text-[22px] font-bold tracking-[-0.02em] text-ink sm:text-[32px]">
+        {item.title}
       </h3>
-      <p style={{ transform: 'translateZ(16px)' }} className="mt-2 text-[14px] leading-relaxed text-muted">
-        {card.text}
-      </p>
+      <motion.p
+        style={{ opacity: textOpacity }}
+        className="mx-auto mt-4 max-w-[320px] text-[14px] leading-relaxed text-muted sm:max-w-[420px] sm:text-[15px]"
+      >
+        {item.text}
+      </motion.p>
     </motion.div>
   )
 }
 
-export default function Problems() {
+function ProblemsCarousel({ progress }) {
+  // El scroll de la sección (0 → 1) recorre linealmente el primer al último
+  // problema: empieza en el índice 0 y termina exactamente en el último, sin dar la vuelta.
+  const active = useTransform(progress, [0, 1], [0, TOTAL - 1])
+  const isMobile = useIsMobile()
+
   return (
-    <section id="problemas" className="section-pad relative">
-      <div className="container-px mx-auto max-w-content">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease: EASE_BRAND }}
-          className="mx-auto max-w-[680px] text-center"
-        >
-          <h2 className="text-[30px] font-extrabold leading-tight tracking-[-0.02em] text-ink sm:text-[38px]">
-            ¿Por qué tu tienda no parece una marca profesional?
-          </h2>
-          <p className="mx-auto mt-4 max-w-[480px] text-[15px] text-muted">
-            Porque tener una tienda online no significa tener una marca.
-          </p>
-        </motion.div>
+    <div className="relative h-[260px] sm:h-[240px]" style={{ perspective: 1200 }}>
+      {ITEMS.map((item, i) => (
+        <ProblemSlide key={item.title} item={item} index={i} active={active} isMobile={isMobile} />
+      ))}
+    </div>
+  )
+}
 
-        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3" style={{ perspective: 1400 }}>
-          {CARDS.map((card, i) => (
-            <ProblemCard key={card.title} card={card} index={i} />
-          ))}
-        </div>
+export default function Problems() {
+  const sectionRef = useRef(null)
+  // Pin de la sección: mientras dura el scroll dentro de ella, el carrusel
+  // gira en 3D acompañando el gesto del usuario en vez de animarse solo.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end end'],
+  })
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.5, delay: 0.15, ease: EASE_BRAND }}
-          className="mt-12 flex justify-center"
-        >
-          <a
-            href="#soluciones"
-            onClick={(e) => {
-              e.preventDefault()
-              document.getElementById('soluciones')?.scrollIntoView({ behavior: 'smooth' })
-            }}
-            className="btn-primary px-6 py-3.5 text-[14px]"
+  return (
+    <section id="problemas" ref={sectionRef} className="relative" style={{ height: '280vh' }}>
+      <div className="sticky top-0 flex min-h-screen flex-col justify-center section-pad">
+        <div className="container-px mx-auto max-w-content">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6, ease: EASE_BRAND }}
+            className="mx-auto max-w-[680px] text-center"
           >
-            Quiero solucionar estos problemas
-            <ArrowUpRight size={16} />
-          </a>
-        </motion.div>
+            <h2 className="text-[30px] font-extrabold leading-tight tracking-[-0.02em] text-ink sm:text-[38px]">
+              ¿Por qué tu tienda no parece una marca profesional?
+            </h2>
+            <p className="mx-auto mt-4 max-w-[480px] text-[15px] text-muted">
+              Porque tener una tienda online no significa tener una marca.
+            </p>
+          </motion.div>
+
+          <div className="mt-10">
+            <ProblemsCarousel progress={scrollYProgress} />
+          </div>
+        </div>
       </div>
     </section>
   )
