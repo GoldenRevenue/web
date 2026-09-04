@@ -22,6 +22,10 @@ export default async function handler(req, res) {
       line_items,
       success_url: `${siteUrl}/gracias.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/#precio`,
+      // Managed Payments (gestión automática de impuestos) viene activado por
+      // defecto en cuentas nuevas de Stripe y exige un tax_code por producto.
+      // Lo desactivamos: no lo necesitamos para este caso.
+      managed_payments: { enabled: false },
     })
 
     res.status(200).json({ url: session.url })
