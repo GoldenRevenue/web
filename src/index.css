@@ -46,8 +46,8 @@ body {
 }
 
 .section-pad {
-  padding-top: clamp(72px, 10vw, 140px);
-  padding-bottom: clamp(72px, 10vw, 140px);
+  padding-top: clamp(48px, 7vw, 96px);
+  padding-bottom: clamp(48px, 7vw, 96px);
 }
 
 .container-px {

@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Home, AlertCircle, Sparkles, Tag, HelpCircle, ArrowUpRight } from 'lucide-react'
+import { Home, Sparkles, Tag, HelpCircle, ArrowUpRight } from 'lucide-react'
 import { CTA_LABEL } from '../config'
 
 const ITEMS = [
   { id: 'inicio', label: 'Inicio', Icon: Home },
-  { id: 'problemas', label: 'Problemas', Icon: AlertCircle },
   { id: 'soluciones', label: 'Soluciones', Icon: Sparkles },
   { id: 'precio', label: 'Precio', Icon: Tag },
   { id: 'faq', label: "FAQ's", Icon: HelpCircle },

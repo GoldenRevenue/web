@@ -2,7 +2,6 @@ import ScrollProgress from './components/ScrollProgress'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Portfolio from './components/Portfolio'
-import Problems from './components/Problems'
 import Solutions from './components/Solutions'
 import Methodology from './components/Methodology'
 import Pricing from './components/Pricing'
@@ -24,7 +23,6 @@ export default function App() {
         <main>
           <Hero />
           <Portfolio />
-          <Problems />
           <Solutions />
           <Methodology />
           <Pricing />
