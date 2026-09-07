@@ -20,15 +20,88 @@ export const config = {
 function getDeliverables() {
   return {
     [process.env.STRIPE_PRICE_BASE]: [
-      { label: 'Plantilla Golden Revenue (.zip)', key: 'Plantilla Golden Revenue.zip' },
-      { label: 'Guía de instalación (PDF)', key: 'Guia Golden Revenue.pdf' },
+      { category: 'base', label: 'Plantilla Golden Revenue (.zip)', key: 'Plantilla Golden Revenue.zip' },
+      { category: 'base', label: 'Guía de instalación (PDF)', key: 'Guia Golden Revenue.pdf' },
     ],
     [process.env.STRIPE_PRICE_LIQUIDS]: [
-      { label: '+180 archivos .liquid (.rar)', key: 'golden-revenue2ç.rar' },
+      { category: 'liquids', label: '+180 archivos .liquid (.rar)', key: 'golden-revenue2ç.rar' },
     ],
     [process.env.STRIPE_PRICE_EBOOK]: [
-      { label: 'Ebook premium (PDF)', key: 'Golden_Revenue_eBook_Premium.pdf' },
+      { category: 'ebook', label: 'Ebook premium (PDF)', key: 'Golden_Revenue_eBook_Premium.pdf' },
     ],
+  }
+}
+
+// Textos del email según lo que se haya comprado, siguiendo la plantilla
+// aprobada ("Textos golden revenue.pdf"). "Plantilla" y "Pack completo" son
+// los dos casos que cubre esa plantilla tal cual; el resto de combinaciones
+// (plantilla + un solo extra) mezclan las mismas frases de forma coherente.
+function buildEmailCopy({ hasLiquids, hasEbook }) {
+  const bullets = [
+    '✅ Plantilla Golden Revenue',
+    '✅ Guía básica de instalación',
+    ...(hasLiquids ? ['✅ Pack de +180 archivos .liquid'] : []),
+    ...(hasEbook ? ['✅ Ebook premium'] : []),
+  ]
+
+  if (hasLiquids && hasEbook) {
+    return {
+      intro:
+        'Gracias por confiar en Golden Revenue y por apostar por el pack completo, todo lo que necesitas para llevar tu tienda al siguiente nivel.',
+      access: 'Tu compra se ha procesado correctamente y ya tienes acceso a todos los archivos, listos para descargar e instalar.',
+      bullets,
+      steps: [
+        'Descarga todos los archivos desde el enlace que te enviamos.',
+        'Instala la plantilla siguiendo la guía paso a paso.',
+        'Añade los archivos .liquid que necesites para personalizar tu tema.',
+        'Lee el ebook premium para sacarle el máximo partido a tu tienda.',
+      ],
+      doubtsText: 'Si tienes cualquier duda durante el proceso, escríbenos y te ayudamos encantados.',
+    }
+  }
+
+  if (hasLiquids) {
+    return {
+      intro:
+        'Gracias por confiar en Golden Revenue y por dar este paso para llevar tu tienda al siguiente nivel, sumando también el pack de +180 archivos .liquid a tu proyecto.',
+      access: 'Tu compra se ha procesado correctamente y ya tienes acceso a tu plantilla de Shopify y a tu archivo .rar, listos para descargar e instalar.',
+      bullets,
+      steps: [
+        'Descarga tus archivos desde el enlace que te enviamos.',
+        'Instala la plantilla siguiendo la guía paso a paso.',
+        'Sube los archivos .liquid a tu tema de Shopify según los necesites.',
+      ],
+      doubtsText: 'Si tienes cualquier duda durante la instalación o sobre cómo usar los archivos, escríbenos y te ayudamos encantados.',
+    }
+  }
+
+  if (hasEbook) {
+    return {
+      intro:
+        'Gracias por confiar en Golden Revenue y por dar este paso para llevar tu tienda al siguiente nivel, sumando también el ebook premium a tu proyecto.',
+      access: 'Tu compra se ha procesado correctamente y ya tienes acceso a tu plantilla de Shopify y a tu ebook, listos para descargar e instalar.',
+      bullets,
+      steps: [
+        'Descarga tus archivos desde el enlace que te enviamos.',
+        'Instala la plantilla siguiendo la guía paso a paso.',
+        'Lee el ebook premium para sacarle el máximo partido a tu tienda.',
+      ],
+      doubtsText: 'Si tienes cualquier duda durante la instalación o sobre el contenido del ebook, escríbenos y te ayudamos encantados.',
+    }
+  }
+
+  return {
+    intro: 'Gracias por confiar en Golden Revenue y por dar este paso para llevar tu tienda al siguiente nivel.',
+    access:
+      'Tu compra se ha procesado correctamente y ya tienes acceso a tu plantilla de Shopify, lista para instalar y empezar a vender con un diseño profesional que convierte.',
+    extraNote: 'Si añadiste algún extra (los +180 archivos .liquid o el ebook premium), también los encontrarás en tu área de descargas.',
+    bullets,
+    steps: [
+      'Descarga tus archivos desde el enlace que te enviamos.',
+      'Sigue la guía de instalación paso a paso.',
+      'Personaliza tu tienda y empieza a vender.',
+    ],
+    doubtsText: 'Si tienes cualquier duda durante la instalación, escríbenos y te ayudamos encantados.',
   }
 }
 
@@ -54,28 +127,41 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-async function sendDeliveryEmail(toEmail, items, siteUrl) {
+async function sendDeliveryEmail(toEmail, items, { hasLiquids, hasEbook }) {
+  const copy = buildEmailCopy({ hasLiquids, hasEbook })
+
+  const bulletsHtml = copy.bullets.map((b) => `<li>${b}</li>`).join('')
+  const stepsHtml = copy.steps.map((s) => `<li>${s}</li>`).join('')
   const linksHtml = items
     .map((item) => `<li><strong>${item.label}</strong>: <a href="${item.url}">Descargar</a></li>`)
     .join('')
 
-  // El logo se sirve desde /public (vía SITE_URL) porque los clientes de correo
-  // no pueden cargar rutas relativas ni archivos locales, solo URLs públicas.
-  const logoUrl = `${siteUrl}/brand/golden-revenue-logo.png`
+  // Los clientes de correo no pueden cargar rutas relativas ni archivos locales,
+  // solo URLs públicas — el logo se sirve desde el bucket público de R2.
+  const logoUrl = 'https://pub-97c92057127448d6861e707a0434fd46.r2.dev/golden-revenue-logo.png'
 
   await transporter.sendMail({
     from: `"Golden Revenue" <${process.env.EMAIL_USER}>`,
     to: toEmail,
-    subject: 'Tu compra en Golden Revenue — enlaces de descarga',
+    subject: '¡Gracias por tu compra! 🎉',
     html: `
       <div style="font-family: Arial, Helvetica, sans-serif; max-width: 480px; margin: 0 auto;">
         <div style="text-align: center; padding: 24px 0;">
           <img src="${logoUrl}" alt="Golden Revenue" width="160" style="display: inline-block;" />
         </div>
-        <p>¡Gracias por tu compra!</p>
-        <p>Aquí tienes tus enlaces de descarga (válidos durante 72 horas):</p>
+        <p>¡Hola!</p>
+        <p>${copy.intro}</p>
+        <p>${copy.access}</p>
+        ${copy.extraNote ? `<p>${copy.extraNote}</p>` : ''}
+        <p><strong>¿Qué incluye tu pedido?</strong></p>
+        <ul>${bulletsHtml}</ul>
+        <p><strong>¿Y ahora qué?</strong></p>
+        <ol>${stepsHtml}</ol>
+        <p><strong>Tus enlaces de descarga</strong> (válidos durante 72 horas):</p>
         <ul>${linksHtml}</ul>
-        <p>Si algún enlace ha caducado, responde a este correo y te lo reenviamos.</p>
+        <p>${copy.doubtsText}</p>
+        <p>Gracias de nuevo por elegir Golden Revenue. ¡Mucho éxito con tu tienda!</p>
+        <p>Un saludo,<br />El equipo de Golden Revenue</p>
       </div>
     `,
   })
@@ -111,6 +197,9 @@ export default async function handler(req, res) {
       const purchased = lineItems.data
         .flatMap((li) => deliverables[li.price?.id] || [])
 
+      const hasLiquids = purchased.some((item) => item.category === 'liquids')
+      const hasEbook = purchased.some((item) => item.category === 'ebook')
+
       const customerEmail = session.customer_details?.email
 
       if (customerEmail && purchased.length > 0) {
@@ -120,8 +209,7 @@ export default async function handler(req, res) {
             url: await signedDownloadUrl(item.key),
           }))
         )
-        const siteUrl = process.env.SITE_URL || `https://${req.headers.host}`
-        await sendDeliveryEmail(customerEmail, items, siteUrl)
+        await sendDeliveryEmail(customerEmail, items, { hasLiquids, hasEbook })
       } else {
         console.error('Falta email de cliente o no hay archivos que entregar', session.id)
       }
