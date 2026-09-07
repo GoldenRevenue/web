@@ -13,6 +13,7 @@
     "@aws-sdk/s3-request-presigner": "^3.699.0",
     "framer-motion": "^11.2.10",
     "lucide-react": "^0.383.0",
+    "micro": "^10.0.1",
     "nodemailer": "^9.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

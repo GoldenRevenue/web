@@ -1,5 +1,6 @@
 import Stripe from 'stripe'
 import nodemailer from 'nodemailer'
+import { buffer } from 'micro'
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
@@ -12,30 +13,22 @@ export const config = {
   },
 }
 
-async function readRawBody(req) {
-  const chunks = []
-  for await (const chunk of req) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk)
-  }
-  return Buffer.concat(chunks)
-}
-
-// price_id de Stripe -> archivo correspondiente en el bucket de R2.
-// Los nombres de archivo deben coincidir exactamente con lo que se suba al bucket.
+// price_id de Stripe -> archivo(s) correspondientes en el bucket de R2.
+// Los nombres de archivo (key) deben coincidir EXACTAMENTE con lo subido al bucket.
+// Si en una misma compra se marcan varios extras, sus archivos se añaden todos
+// al mismo email (no hace falta lógica aparte para "todo junto").
 function getDeliverables() {
   return {
-    [process.env.STRIPE_PRICE_BASE]: {
-      label: 'Plantilla Golden Revenue + guía de instalación',
-      key: '02_sirviendo_chimenea_fincavinoa.mp4',
-    },
-    [process.env.STRIPE_PRICE_LIQUIDS]: {
-      label: '+180 archivos .liquid',
-      key: '03_brindis_cenital_quintaluna.mp4',
-    },
-    [process.env.STRIPE_PRICE_EBOOK]: {
-      label: 'Ebook premium',
-      key: '04_tres_botellas_chimenea.mp4',
-    },
+    [process.env.STRIPE_PRICE_BASE]: [
+      { label: 'Plantilla Golden Revenue (.zip)', key: 'Plantilla Golden Revenue.zip' },
+      { label: 'Guía de instalación (PDF)', key: 'Guia Golden Revenue.pdf' },
+    ],
+    [process.env.STRIPE_PRICE_LIQUIDS]: [
+      { label: '+180 archivos .liquid (.rar)', key: 'golden-revenue2ç.rar' },
+    ],
+    [process.env.STRIPE_PRICE_EBOOK]: [
+      { label: 'Ebook premium (PDF)', key: 'Golden_Revenue_eBook_Premium.pdf' },
+    ],
   }
 }
 
@@ -89,7 +82,7 @@ export default async function handler(req, res) {
   let event
 
   try {
-    const rawBody = await readRawBody(req)
+    const rawBody = await buffer(req)
     event = stripe.webhooks.constructEvent(rawBody, signature, process.env.STRIPE_WEBHOOK_SECRET)
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message)
@@ -107,8 +100,7 @@ export default async function handler(req, res) {
       const deliverables = getDeliverables()
 
       const purchased = lineItems.data
-        .map((li) => deliverables[li.price?.id])
-        .filter(Boolean)
+        .flatMap((li) => deliverables[li.price?.id] || [])
 
       const customerEmail = session.customer_details?.email
 
