@@ -54,20 +54,29 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-async function sendDeliveryEmail(toEmail, items) {
+async function sendDeliveryEmail(toEmail, items, siteUrl) {
   const linksHtml = items
     .map((item) => `<li><strong>${item.label}</strong>: <a href="${item.url}">Descargar</a></li>`)
     .join('')
+
+  // El logo se sirve desde /public (vía SITE_URL) porque los clientes de correo
+  // no pueden cargar rutas relativas ni archivos locales, solo URLs públicas.
+  const logoUrl = `${siteUrl}/brand/golden-revenue-logo.png`
 
   await transporter.sendMail({
     from: `"Golden Revenue" <${process.env.EMAIL_USER}>`,
     to: toEmail,
     subject: 'Tu compra en Golden Revenue — enlaces de descarga',
     html: `
-      <p>¡Gracias por tu compra!</p>
-      <p>Aquí tienes tus enlaces de descarga (válidos durante 72 horas):</p>
-      <ul>${linksHtml}</ul>
-      <p>Si algún enlace ha caducado, responde a este correo y te lo reenviamos.</p>
+      <div style="font-family: Arial, Helvetica, sans-serif; max-width: 480px; margin: 0 auto;">
+        <div style="text-align: center; padding: 24px 0;">
+          <img src="${logoUrl}" alt="Golden Revenue" width="160" style="display: inline-block;" />
+        </div>
+        <p>¡Gracias por tu compra!</p>
+        <p>Aquí tienes tus enlaces de descarga (válidos durante 72 horas):</p>
+        <ul>${linksHtml}</ul>
+        <p>Si algún enlace ha caducado, responde a este correo y te lo reenviamos.</p>
+      </div>
     `,
   })
 }
@@ -111,7 +120,8 @@ export default async function handler(req, res) {
             url: await signedDownloadUrl(item.key),
           }))
         )
-        await sendDeliveryEmail(customerEmail, items)
+        const siteUrl = process.env.SITE_URL || `https://${req.headers.host}`
+        await sendDeliveryEmail(customerEmail, items, siteUrl)
       } else {
         console.error('Falta email de cliente o no hay archivos que entregar', session.id)
       }
