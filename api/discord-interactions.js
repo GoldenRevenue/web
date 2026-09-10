@@ -106,7 +106,20 @@ export default async function handler(req, res) {
       .toLowerCase();
     const userId = interaction.member.user.id;
 
-    const purchase = await redis.get(`purchase:${email}`);
+    console.log("🔍 Email recibido del formulario:", JSON.stringify(email));
+    console.log(
+      "🔍 Variables de entorno presentes:",
+      "URL:", !!process.env.GOLDEN_KV_KV_REST_API_URL,
+      "TOKEN:", !!process.env.GOLDEN_KV_KV_REST_API_TOKEN
+    );
+
+    let purchase;
+    try {
+      purchase = await redis.get(`purchase:${email}`);
+      console.log("🔍 Resultado de Redis:", JSON.stringify(purchase));
+    } catch (err) {
+      console.error("❌ Error consultando Redis:", err.message);
+    }
 
     if (purchase && purchase.paid) {
       const ok = await assignClientRole(userId);
