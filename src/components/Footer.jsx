@@ -61,6 +61,21 @@ export default function Footer() {
             </a>
           </div>
         </div>
+
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] text-muted2 sm:justify-start">
+          <a href="/aviso-legal.html" className="transition-colors hover:text-ink">
+            Aviso Legal
+          </a>
+          <a href="/privacidad.html" className="transition-colors hover:text-ink">
+            Privacidad
+          </a>
+          <a href="/cookies.html" className="transition-colors hover:text-ink">
+            Cookies
+          </a>
+          <a href="/terminos.html" className="transition-colors hover:text-ink">
+            Términos y Condiciones
+          </a>
+        </div>
       </div>
     </footer>
   )
