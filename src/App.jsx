@@ -1,3 +1,4 @@
+import CookieBanner from './components/CookieBanner';
 import ScrollProgress from './components/ScrollProgress'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -28,6 +29,7 @@ export default function App() {
           <Pricing />
           <FAQ />
           <CTA />
+          <CookieBanner />
         </main>
         <Footer />
       </div>
