@@ -37,7 +37,7 @@ export default function CookieBanner() {
               analítica ni publicidad. Puedes consultar más detalles en
               nuestra{" "}
               <a
-                href="/public/cookies.html"
+                href="/cookies.html"
                 className="text-emerald-400 underline hover:text-emerald-300"
               >
                 Política de Cookies
